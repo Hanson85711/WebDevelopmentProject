@@ -1,6 +1,5 @@
 import { app } from './app.js'
-import dotenv from 'dotenv'
-dotenv.config()
+
 import { initDatabase } from './db/init.js'
 const PORT = 3000
 try {
