@@ -1,0 +1,4 @@
+{
+  "name": "WebDevelopmentProject",
+  "postStartCommand": "bash .devcontainer/allow-blog-network-forwarding.sh"
+}
