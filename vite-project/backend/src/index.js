@@ -1,7 +1,6 @@
 import { app } from './app.js'
 
 import { initDatabase } from './db/init.js'
-const PORT = 3000
 try {
   await initDatabase()
   const PORT = process.env.PORT

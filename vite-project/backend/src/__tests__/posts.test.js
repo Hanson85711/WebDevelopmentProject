@@ -4,8 +4,6 @@ import { createPost,
   listAllPosts,
   listPostsByAuthor,
   listPostsByTag,
-  getPostById,
-  updatePost,
   deletePost
 } from '../services/posts.js'
 import { Post } from '../db/models/post.js'
@@ -17,7 +15,7 @@ const samplePosts = [
     author: 'Daniel Bugl',
     tags: ['react', 'nodejs'],
   },
-  { title: 'Guide to TypeScript' },
+  { title: 'Guide to TypeScript' }
 ]
 let createdSamplePosts = []
 // eslint-disable-next-line no-undef
@@ -101,3 +99,14 @@ describe('creating posts', () => {
     expect(createdPost._id).toBeInstanceOf(mongoose.Types.ObjectId)
   })
 })
+
+describe('deleting posts', () => {
+  test('should delete a post by id', async () => {
+    const postToDelete = createdSamplePosts[0]
+    await deletePost(postToDelete._id)
+    const foundPost = await Post.findById(postToDelete._id)
+    expect(foundPost).toBeNull()
+  }) 
+})
+
+
