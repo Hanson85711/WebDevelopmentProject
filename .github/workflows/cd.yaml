@@ -23,8 +23,8 @@ jobs:
       - name: Build and push backend image
         uses: docker/build-push-action@v4
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./viteproject/backend
+          file: ./viteproject/backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/blog-backend:${{ github.sha }}
       - id: deploy-backend
@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile
+          file: ./viteproject/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/blog-frontend:${{ github.sha }}
           build-args: VITE_BACKEND_URL=${{ steps.deploy-backend.outputs.url }}/api/v1
