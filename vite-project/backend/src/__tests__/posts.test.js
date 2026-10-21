@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test, beforeAll } from '@jest/globals'
 import { createPost,   
   listAllPosts,
   listPostsByAuthor,
@@ -7,16 +7,23 @@ import { createPost,
   deletePost
 } from '../services/posts.js'
 import { Post } from '../db/models/post.js'
-const samplePosts = [
-  { title: 'Learning Redux', author: 'Daniel Bugl', tags: ['redux'] },
-  { title: 'Learn React Hooks', author: 'Daniel Bugl', tags: ['react'] },
-  {
-    title: 'Full-Stack React Projects',
-    author: 'Daniel Bugl',
-    tags: ['react', 'nodejs'],
-  },
-  { title: 'Guide to TypeScript' }
-]
+
+import { createUser } from '../services/users.js'
+let testUser = null
+
+let samplePosts = []
+beforeAll(async () => {
+  testUser = await createUser({ username: 'sample', password: 'user' })
+  samplePosts = [
+    { title: 'Learning Redux', author: testUser._id, tags: ['redux'] },
+    { title: 'Learn React Hooks', author: testUser._id, tags: ['react'] },
+    {
+      title: 'Full-Stack React Projects',
+      author: testUser._id,
+      tags: ['react', 'nodejs'],
+    },
+  ]
+})
 let createdSamplePosts = []
 // eslint-disable-next-line no-undef
 beforeEach(async () => {
@@ -54,7 +61,7 @@ describe('listing posts', () => {
     )
   })
   test('should be able to filter posts by author', async () => {
-    const posts = await listPostsByAuthor('Daniel Bugl')
+    const posts = await listPostsByAuthor(testUser.username)
     expect(posts.length).toBe(3)
   })
   test('should be able to filter posts by tag', async () => {
@@ -67,11 +74,10 @@ describe('creating posts', () => {
   test('with all parameters should succeed', async () => {
     const post = {
       title: 'Hello Mongoose!',
-      author: 'Hanson Lee',
       contents: 'This post is stored in a MongoDB database using Mongoose.',
       tags: ['mongoose', 'mongodb'],
     }
-    const createdPost = await createPost(post)
+    const createdPost = await createPost(testUser._id, post)
     expect(createdPost._id).toBeInstanceOf(mongoose.Types.ObjectId)
     const foundPost = await Post.findById(createdPost._id)
     expect(foundPost).toEqual(expect.objectContaining(post))
@@ -80,12 +86,11 @@ describe('creating posts', () => {
   })
   test('without title should fail', async () => {
     const post = {
-      author: 'Hanson Lee',
       contents: 'Post with no title',
       tags: ['empty'],
     }
     try {
-      await createPost(post)
+      await createPost(testUser._id, post)
     } catch (err) {
       expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
       expect(err.message).toContain('`title` is required')
@@ -95,7 +100,7 @@ describe('creating posts', () => {
     const post = {
       title: 'Only a title',
     }
-    const createdPost = await createPost(post)
+    const createdPost = await createPost(testUser._id, post)
     expect(createdPost._id).toBeInstanceOf(mongoose.Types.ObjectId)
   })
 })
@@ -103,7 +108,7 @@ describe('creating posts', () => {
 describe('deleting posts', () => {
   test('should delete a post by id', async () => {
     const postToDelete = createdSamplePosts[0]
-    await deletePost(postToDelete._id)
+    await deletePost(testUser._id, postToDelete._id)
     const foundPost = await Post.findById(postToDelete._id)
     expect(foundPost).toBeNull()
   }) 
