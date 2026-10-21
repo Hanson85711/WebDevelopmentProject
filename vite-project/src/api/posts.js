@@ -6,15 +6,17 @@ export const getPosts = async (queryParams) => {
   return await res.json()
 }
 
-export const createPost = async (post) => {
-  const res = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/
-posts`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(post),
+export const createPost = async (token, post) => {
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  )
+    body: JSON.stringify(post),
+  })
+  if (!res.ok) {
+    throw new Error(`Failed to create post (${res.status})`)
+  }
   return await res.json()
 }
