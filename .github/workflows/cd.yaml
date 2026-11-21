@@ -26,6 +26,7 @@ jobs:
           context: ./vite-project/backend
           file: ./vite-project/backend/Dockerfile
           push: true
+          provenance: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/blog-backend:${{ github.sha }}
       - id: deploy-backend
         name: Deploy backend
