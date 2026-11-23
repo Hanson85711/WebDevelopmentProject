@@ -6,13 +6,14 @@ import { Header } from '../components/Header.jsx'
 import { useQuery } from '@tanstack/react-query'
 import { getPosts } from '../api/posts.js'
 import { useState } from 'react'
-export function Blog() {
+export function Blog({ initialData }) {
   const [author, setAuthor] = useState('')
   const [sortBy, setSortBy] = useState('createdAt')
   const [sortOrder, setSortOrder] = useState('descending')
   const postsQuery = useQuery({
     queryKey: ['posts', { author, sortBy, sortOrder }],
     queryFn: () => getPosts({ author, sortBy, sortOrder }),
+    initialData,
   })
   const posts = postsQuery.data ?? []
   return (
@@ -44,6 +45,7 @@ export function Blog() {
     </div>
   )
 }
+
 
 
 

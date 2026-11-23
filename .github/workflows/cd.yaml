@@ -41,6 +41,7 @@ jobs:
           context: ./vite-project
           file: ./vite-project/Dockerfile
           push: true
+          provenance: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/blog-frontend:${{ github.sha }}
           build-args: VITE_BACKEND_URL=${{ steps.deploy-backend.outputs.url }}/api/v1
       - id: deploy-frontend
