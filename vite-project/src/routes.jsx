@@ -2,7 +2,8 @@ import { Blog } from './pages/Blog.jsx'
 import { Signup } from './pages/Signup.jsx'
 import { Login } from './pages/Login.jsx'
 import { useLoaderData } from 'react-router-dom'
-import { getPosts } from './api/posts.js'
+import { getPosts, getPostById } from './api/posts.js'
+import { ViewPost } from './pages/ViewPost.jsx'
 import {
   QueryClient,
   dehydrate,
@@ -49,5 +50,33 @@ export const routes = [
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/posts/:postId',
+    loader: async ({ params }) => {
+      const postId = params.postId
+      const queryClient = new QueryClient()
+      const post = await getPostById(postId)
+      await queryClient.prefetchQuery({
+        queryKey: ['post', postId],
+        queryFn: () => post,
+      })
+      if (post?.author) {
+        await queryClient.prefetchQuery({
+          queryKey: ['users', post.author],
+          queryFn: () => getUserInfo(post.author),
+        })
+      }
+      return { dehydratedState: dehydrate(queryClient), postId }
+    },
+ 
+Component() {
+      const { dehydratedState, postId } = useLoaderData()
+      return (
+        <HydrationBoundary state={dehydratedState}>
+          <ViewPost postId={postId} />
+        </HydrationBoundary>
+      )
+    },
   },
 ]
