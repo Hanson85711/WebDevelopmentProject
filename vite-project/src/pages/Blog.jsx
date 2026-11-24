@@ -3,32 +3,33 @@ import { CreatePost } from '../components/CreatePost.jsx'
 import { PostFilter } from '../components/PostFilter.jsx'
 import { PostSorting } from '../components/PostSorting.jsx'
 import { Header } from '../components/Header.jsx'
+import { Helmet } from 'react-helmet-async'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getPosts } from '../api/posts.js'
-import { useState } from 'react'
-export function Blog({ initialData }) {
+export function Blog() {
   const [author, setAuthor] = useState('')
   const [sortBy, setSortBy] = useState('createdAt')
   const [sortOrder, setSortOrder] = useState('descending')
   const postsQuery = useQuery({
     queryKey: ['posts', { author, sortBy, sortOrder }],
     queryFn: () => getPosts({ author, sortBy, sortOrder }),
-    initialData,
   })
   const posts = postsQuery.data ?? []
   return (
     <div style={{ padding: 8 }}>
-      <h1>Welcome to my Blog</h1>
+      <Helmet>
+        <title>Full-Stack React Blog</title>
+      </Helmet>
       <Header />
       <br />
       <hr />
-
       <CreatePost />
       <br />
       <hr />
       Filter by:
       <PostFilter
-        field='Author'
+        field='author'
         value={author}
         onChange={(value) => setAuthor(value)}
       />
@@ -45,7 +46,3 @@ export function Blog({ initialData }) {
     </div>
   )
 }
-
-
-
-
