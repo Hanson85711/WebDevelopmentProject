@@ -6,29 +6,40 @@ import { Post } from '../components/Post.jsx'
 import { getPostById } from '../api/posts.js'
 import { Helmet } from 'react-helmet-async'
 export function ViewPost({ postId }) {
-  const postQuery = useQuery({
-    queryKey: ['post', postId],
-    queryFn: () => getPostById(postId),
-  })
-  const post = postQuery.data
-  return (
-    <div style={{ padding: 8 }}>
-      {post && (
-        <Helmet>
-          <title>{post.title} | Full-Stack React Blog</title>
-        </Helmet>
-      )}
-      <Header />
-      <br />
-      <hr />
-      <Link to='/'>Back to main page</Link>
-      <br />
-      <hr />
-      {post ? <Post {...post} fullPost /> : `Post with id${postId} not found.`}
-    </div>
-  )
+    const postQuery = useQuery({
+        queryKey: ['post', postId],
+        queryFn: () => getPostById(postId),
+    })
+    const post = postQuery.data
+    function truncate(str, max = 160) {
+        if (!str) return str
+        if (str.length > max) {
+            return str.slice(0, max - 3) + '...'
+        } else {
+            return str
+        }
+    }
+
+    return (
+        <div style={{ padding: 8 }}>
+            {post && (
+                <Helmet>
+                    <title>{post.title} | Full-Stack React Blog</title>
+                    <meta name='description' content={truncate(post.contents)} />
+                </Helmet>
+            )}
+            <Header />
+            <br />
+            <hr />
+            <Link to='/'>Back to main page</Link>
+            <br />
+            <hr />
+            {post ? <Post {...post} fullPost /> : `Post with id${postId} not found.`}
+        </div>
+    )
 }
 ViewPost.propTypes = {
-  postId: PropTypes.string.isRequired,
+    postId: PropTypes.string.isRequired,
 }
+
 
