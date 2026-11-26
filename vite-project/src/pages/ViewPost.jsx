@@ -4,11 +4,11 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { Header } from '../components/Header.jsx'
 import { Post } from '../components/Post.jsx'
 import { getPostById } from '../api/posts.js'
-import { getUserInfo } from '../api/users.js'
-import { Helmet } from 'react-helmet-async'
+import { PostStats } from '../components/PostStats.jsx'
 import { useEffect, useState } from 'react'
 import { postTrackEvent } from '../api/events.js'
-
+import { getUserInfo } from '../api/users.js'
+import { Helmet } from 'react-helmet-async'
 export function ViewPost({ postId }) {
   const [session, setSession] = useState()
   const trackEventMutation = useMutation({
@@ -66,13 +66,17 @@ export function ViewPost({ postId }) {
       <Link to='/'>Back to main page</Link>
       <br />
       <hr />
-      {post ? <Post {...post} fullPost /> : `Post with id${postId} not found.`}
+      {post ? (
+        <div>
+          <Post {...post} fullPost />
+          <hr /> <PostStats postId={postId} />
+        </div>
+      ) : (
+        `Post with id ${postId} not found.`
+      )}
     </div>
   )
 }
 ViewPost.propTypes = {
   postId: PropTypes.string.isRequired,
 }
-
-
-
