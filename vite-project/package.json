@@ -13,11 +13,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^4.3.8",
     "@tanstack/react-query": "^5.104.2",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "graphql": "^17.1.0",
+    "graphsql": "^0.0.0",
     "jwt-decode": "^4.0.0",
     "mongodb": "^7.7.0",
     "prop-types": "^15.8.1",
